@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.BicycleInfoMapper">
+    <!--根据id删除车辆信息-->
+    <delete id="deleteBicycleInfoListById" parameterType="java.util.List">
+        DELETE FROM bicycleinfo
+        WHERE bicycleinfo_id
+        IN(
+        <foreach collection="listBicycleinfoId" item="item" separator=",">#{item}</foreach>
+        )
+    </delete>
+
+    <!--修改车辆信息-->
+    <update id="updateBicycleInfoById" parameterType="com.bicycle.entity.BicycleInfo">
+        UPDATE bicycleinfo
+        SET store_id = #{storeId},
+            deposit_id = #{depositId},
+            currentprice_id = #{currentpriceId},
+            b_brand = #{bBrand},
+            b_name = #{bName},
+            b_type = #{bType},
+            b_stock = #{bStock},
+            b_image = #{bImage},
+            b_imgurl = #{bImgurl},
+            b_essay = #{bEssay}
+        WHERE bicycleinfo_id = #{bicycleinfoId}
+    </update>
+</mapper>

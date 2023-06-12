@@ -1,0 +1,129 @@
+.leftNav-item {
+	position: fixed;
+	right: 5px;
+	top: 55%;
+	z-index: 999999;
+}
+.leftNav-item ul{
+	margin: 0;
+	padding: 0;
+}
+.leftNav-item ul li {
+	width: 50px;
+	height: 50px;
+	font-size: 20px;
+	border-radius: 5px;
+	background: #fff;
+	color: #fff;
+	text-align: center;
+	margin: 5px 0;
+	cursor: pointer;
+	position: relative;
+	transition: .5s;
+	list-style: none;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+.leftNav-item ul li i {
+	color: #666;
+	line-height: 50px;
+	font-size:20px;
+}
+.leftNav-item ul li .rota {
+	display: block;
+	position: absolute;
+	border-radius: 5px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	-webkit-transform-origin: -50% 50%;
+	transform-origin: -50% 50%;
+	-webkit-transform: rotate3d(0,0,1,90deg);
+	transform: rotate3d(0,0,1,90deg);
+	-webkit-transition: -webkit-transform .3s ease-in;
+	transition: transform .3s ease-in;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	background: #1B8BF5;
+	color: #fff;
+	text-align: center;
+	line-height: 60px;
+	font-size: 12px;
+	text-decoration: none;
+	padding: 2px 3px;
+	box-sizing: border-box;
+}
+
+.leftNav-item ul li:hover .rota {
+	-webkit-transform: rotate3d(0,0,1,0deg);
+	transform: rotate3d(0,0,1,0deg);
+	-webkit-transition-timing-function: ease-out;
+	transition-timing-function: ease-out;
+	opacity: .9;
+	filter: alpha(opacity=90);
+}
+
+.leftNav-item ul li .title {
+	position: absolute;
+	right: -72px;
+	top: 16px;
+	height: 18px;
+	line-height: 18px;
+	font-size: 14px;
+	text-align: left;
+	padding: 3px 10px;
+	background: rgba(0,0,0,0.5);
+	color: #fff;
+	border-radius: 8px;
+}
+
+.leftNav-item ul li .img-item {
+	position: absolute;
+	left: 65px;
+	top: -30px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+.leftNav-item ul li div img {
+	max-width: 120px;
+	display: block;
+}
+
+.leftNav-item ul li .text-item {
+	position: absolute;
+	left: 65px;
+	top: 18px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: #fff;
+	text-decoration: none;
+	padding: 3px 8px;
+	color: #444;
+	font-size: 14px;
+}
+
+.leftNav-item ul li .text-item span {
+	position: relative;
+	padding-left: 15px;
+	word-break:keep-all;
+	white-space:nowrap;
+}
+
+.leftNav-item ul li .text-item span i {
+	font-size: 14px;
+	line-height: 24px;
+	position: absolute;
+	left: 0;
+	top: -2px;
+	color: #444;
+}
+
+.leftNav-item ul li div {
+	display: none;
+}
+
+.for-top {
+	display: none;
+}

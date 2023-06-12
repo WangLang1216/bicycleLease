@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.CarouselMapper">
+    <!--查询主页轮播图数据（carousel）-->
+    <select id="queryCarousel" resultType="com.bicycle.entity.Carousel">
+        SELECT carousel_id, c_image, c_imgurl FROM carousel
+    </select>
+
+    <!--删除轮播图数据-->
+    <delete id="deleteCarouselInfoById" parameterType="java.lang.String">
+        DELETE FROM carousel
+        WHERE carousel_id=#{carouselId}
+    </delete>
+
+    <!--新增轮播图信息-->
+    <insert id="addCarouselInfo" parameterType="java.lang.String">
+        INSERT INTO carousel (carousel_id, c_image, c_imgurl)
+        SELECT #{carouselId}, b_image, b_imgurl
+        FROM bicycleinfo
+        WHERE bicycleinfo_id=#{bicycleInfoId}
+    </insert>
+
+    <!--DIY轮播-->
+    <insert id="addCarouselInfoDIY" parameterType="java.lang.String">
+        INSERT INTO carousel (carousel_id, c_image, c_imgurl)
+        VALUES (#{carouselId}, #{image}, #{imgurl})
+    </insert>
+</mapper>

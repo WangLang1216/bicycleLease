@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.PlateDataMapper">
+    <!--根据板块查询信息-->
+    <select id="queryBicycleByType" parameterType="java.lang.String" resultType="com.bicycle.entity.PlateDataList">
+        SELECT platedata.bicycleinfo_id, b_brand, b_name, b_imgurl, b_stock, b_essay, c_price, s_address
+        FROM platedata, bicycleinfo, currentprice, store
+        WHERE platedata.p_plate = #{plate}
+          AND bicycleinfo.bicycleinfo_id = platedata.bicycleinfo_id
+          AND currentprice.currentprice_id = bicycleinfo.currentprice_id
+          AND store.store_id = bicycleinfo.store_id
+    </select>
+
+    <!--查询板块数据-->
+    <select id="queryPlateDataAll" resultType="com.bicycle.entity.PlateDataList">
+        SELECT platedata.platedata_id, platedata.bicycleinfo_id, p_plate, b_brand, b_name, b_type, b_stock, b_imgurl,s_address
+        FROM platedata, bicycleinfo, store
+        WHERE bicycleinfo.bicycleinfo_id = platedata.bicycleinfo_id
+          AND store.store_id = bicycleinfo.store_id
+    </select>
+
+    <!--删除板块数据-->
+    <delete id="deletePlateDataListById" parameterType="java.util.List">
+        DELETE FROM platedata
+        WHERE platedata_id
+        IN(
+        <foreach collection="plateDataId" item="item" separator=",">#{item}</foreach>
+        )
+    </delete>
+
+    <!--新增板块数据-->
+    <insert id="addPlateDataInfo" parameterType="java.lang.String">
+        INSERT INTO platedata(platedata_id, bicycleinfo_id, p_plate)
+        VALUES (#{platedataId}, #{bicycleId}, #{plate})
+    </insert>
+</mapper>

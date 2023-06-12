@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.LeaseInfoMapper">
+    <!--新增订单押金-->
+    <insert id="addOrderdeposit" parameterType="com.bicycle.entity.LeaseAndCustomer">
+        INSERT INTO orderdeposit(orderdeposit.orderdeposit_id, orderdeposit.o_price)
+        SELECT #{orderdepositId}, depositi.d_price * #{lNumber}
+        FROM depositi
+        INNER JOIN bicycleinfo
+        ON depositi.deposit_id = bicycleinfo.bicycleinfo_id
+        AND bicycleinfo.bicycleinfo_id = #{bicycleinfoId}
+    </insert>
+    <!--新增租借信息-->
+    <insert id="addLeaseInfo" parameterType="com.bicycle.entity.LeaseAndCustomer">
+        INSERT INTO leaseinfo(leaseinfo_id, bicycleinfo_id, accountcust_id, orderdeposit_id, l_datefrist, l_timefrist,l_number)
+        VALUES (#{leaseInfoId}, #{bicycleinfoId}, #{accountcustId}, #{orderdepositId}, #{lDatefrist}, #{lTimefrist}, #{lNumber})
+    </insert>
+    <!--修改库存-->
+    <update id="updateStock" parameterType="java.util.Map">
+        UPDATE bicycleinfo
+        INNER JOIN leaseinfo
+        ON bicycleinfo.bicycleinfo_id = leaseinfo.bicycleinfo_id
+        AND leaseinfo.bicycleinfo_id = #{leaseInfoId}
+        SET bicycleinfo.b_stock = bicycleinfo.b_stock - #{lNumber}
+    </update>
+
+    <!--租借信息查询-->
+    <select id="queryLeaseInfoList" resultType="com.bicycle.entity.LeaseInfoList">
+        SELECT leaseinfo.leaseinfo_id, bicycleinfo.bicycleinfo_id, customer.accountcust_id, depositi.deposit_id, currentprice.currentprice_id,
+               leaseinfo.l_datefrist, leaseinfo.l_timefrist, leaseinfo.l_datesecond, leaseinfo.l_timesecond, leaseinfo.l_duration, leaseinfo.l_money, leaseinfo.l_number, leaseinfo.l_status,
+               customer.c_name, bicycleinfo.b_brand, bicycleinfo.b_name, (depositi.d_price * leaseinfo.l_number) AS d_price, currentprice.c_price
+        FROM leaseinfo
+        LEFT OUTER JOIN bicycleinfo
+                     ON leaseinfo.bicycleinfo_id = bicycleinfo.bicycleinfo_id
+        LEFT OUTER JOIN customer
+                     ON leaseinfo.accountcust_id = customer.accountcust_id
+        LEFT OUTER JOIN depositi
+                     ON depositi.deposit_id = bicycleinfo.deposit_id
+        LEFT OUTER JOIN currentprice
+                     ON bicycleinfo.currentprice_id = currentprice.currentprice_id
+        WHERE leaseinfo.l_status != 3
+    </select>
+
+    <!--修改租借信息-->
+    <update id="updateLeaseInfoById" parameterType="com.bicycle.entity.LeaseInfo">
+        UPDATE leaseinfo
+        SET leaseinfo.accountcust_id = #{accountcustId},
+            leaseinfo.bicycleinfo_id = #{bicycleinfoId},
+            leaseinfo.l_number = #{lNumber},
+            leaseinfo.l_datefrist = #{lDatefrist},
+            leaseinfo.l_datesecond = #{lDatesecond},
+            leaseinfo.l_timefrist = #{lTimefrist},
+            leaseinfo.l_timesecond = #{lTimesecond},
+            leaseinfo.l_duration = #{lDuration},
+            leaseinfo.l_money = (SELECT currentprice.c_price
+                                 FROM currentprice
+                                 INNER JOIN bicycleinfo
+                                 ON currentprice.currentprice_id = bicycleinfo.currentprice_id
+                                 AND bicycleinfo.bicycleinfo_id = #{bicycleinfoId}) * leaseinfo.l_number * #{lDuration}
+        WHERE leaseinfo.leaseinfo_id = #{leaseInfoId}
+    </update>
+
+    <!--修改租借状态-->
+    <update id="editLeaseStatusListById" parameterType="java.util.Map">
+        UPDATE leaseinfo
+        SET l_status = #{l_status}
+        WHERE leaseinfo_id
+        IN (
+            <foreach collection="leaseInfoIdList" item="item" separator=",">#{item}</foreach>
+        )
+    </update>
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="rear" />
+        <module name="frontend" />
+        <module name="framework" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="biclease" target="8" />
+      <module name="framework" target="8" />
+      <module name="framework1" target="8" />
+      <module name="frontend" target="8" />
+      <module name="frontend1" target="8" />
+      <module name="rear" target="8" />
+      <module name="rear1" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="framework" options="-parameters" />
+      <module name="framework1" options="-parameters" />
+      <module name="frontend" options="-parameters" />
+      <module name="frontend1" options="-parameters" />
+      <module name="rear" options="-parameters" />
+      <module name="rear1" options="-parameters" />
+    </option>
+  </component>
+</project>

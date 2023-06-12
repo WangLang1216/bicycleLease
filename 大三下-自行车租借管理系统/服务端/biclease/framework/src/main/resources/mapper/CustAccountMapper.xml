@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.CustAccountMapper">
+    <!--修改账号的密码（custaccount）-->
+    <update id="resettingAccount" parameterType="java.lang.String">
+        UPDATE custaccount
+        INNER JOIN customer
+        ON custaccount.accountcust_id = customer.accountcust_id
+        AND customer.c_email = #{email}
+        SET custaccount.c_password = #{password}
+    </update>
+
+    <!--注册-->
+    <insert id="registerAccount" parameterType="com.bicycle.entity.dto.RegisterAccountDto">
+        INSERT INTO custaccount (accountcust_id, c_password, c_date)
+        VALUES(#{accountcustId}, #{cPassword}, #{cDate});
+    </insert>
+    <insert id="registerAccountInfo" parameterType="com.bicycle.entity.dto.RegisterAccountDto">
+        INSERT INTO customer (customer_id, accountcust_id, c_card, c_phone, c_email)
+        VALUES(#{customerId}, #{accountcustId}, #{cCard}, #{accountcustId}, #{cEmail});
+    </insert>
+
+    <!--修改状态-->
+    <insert id="updateStatusById" parameterType="java.lang.String">
+        UPDATE custaccount
+        SET c_status = #{status}
+        WHERE accountcust_id = #{accountcustId}
+    </insert>
+</mapper>

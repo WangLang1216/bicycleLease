@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.StoreMapper">
+    <!--查询店铺信息-->
+    <select id="queryStoreInfoList" resultType="com.bicycle.entity.Store">
+        SELECT store_id, s_name, s_address, s_phone, s_status
+        FROM store
+    </select>
+    <!--修改店铺信息-->
+    <update id="updataStoreInfoById" parameterType="com.bicycle.entity.Store">
+        UPDATE store
+        SET s_name = #{sName},
+            s_address = #{sAddress},
+            s_phone = #{sPhone}
+        WHERE store_id = #{storeId}
+    </update>
+</mapper>

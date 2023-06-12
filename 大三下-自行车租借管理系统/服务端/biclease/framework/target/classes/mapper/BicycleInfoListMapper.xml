@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.BicycleInfoListMapper">
+    <!--查询车辆信息-->
+    <select id="queryBicycleInfo" resultType="com.bicycle.entity.BicycleInfoList">
+        SELECT bicycleinfo.bicycleinfo_id,
+               bicycleinfo.b_brand,
+               bicycleinfo.b_type,
+               bicycleinfo.b_name,
+               bicycleinfo.b_imgurl,
+               bicycleinfo.b_image,
+               bicycleinfo.b_stock,
+               bicycleinfo.b_essay,
+               store.s_address,
+               depositi.d_price,
+               currentprice.c_price
+        FROM bicycleinfo
+        LEFT OUTER JOIN store
+                     ON bicycleinfo.store_id = store.store_id
+        LEFT OUTER JOIN depositi
+                     ON bicycleinfo.deposit_id = depositi.deposit_id
+        LEFT OUTER JOIN currentprice
+                     ON bicycleinfo.currentprice_id = currentprice.currentprice_id
+    </select>
+</mapper>

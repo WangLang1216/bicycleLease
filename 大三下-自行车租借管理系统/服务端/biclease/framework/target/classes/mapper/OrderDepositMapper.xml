@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.OrderDepositMapper">
+
+    <!--押金订单查询-->
+    <select id="queryOrderDepositList" resultType="com.bicycle.entity.OrderDepositList">
+        SELECT od.orderdeposit_id, od.o_price, od.o_status, li.accountcust_id, li.l_datefrist, c.c_name, bi.b_brand, bi.b_name
+        FROM leaseinfo li
+        LEFT JOIN orderdeposit od ON li.orderdeposit_id = od.orderdeposit_id
+        LEFT JOIN customer c ON li.accountcust_id = c.accountcust_id
+        LEFT JOIN bicycleinfo bi ON li.bicycleinfo_id = bi.bicycleinfo_id
+    </select>
+
+    <!--修改状态-->
+    <update id="updateOrderDepositList" parameterType="java.util.Map">
+        UPDATE orderdeposit
+        SET o_status = #{status}
+        WHERE orderdeposit_id
+        IN(
+        <foreach collection="orderdepositIdList" item="item" separator=",">#{item}</foreach>
+        )
+    </update>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.CustomerMapper">
+    <!--更新顾客表信息 -->
+    <update id="updateCustomer" parameterType="com.bicycle.entity.Customer">
+        UPDATE customer
+        SET c_name = #{cName},
+            c_sex = #{cSex},
+            c_age = #{cAge},
+            c_email = #{cEmail},
+            c_address = #{cAddress}
+        WHERE accountcust_id = #{accountcustId}
+    </update>
+
+    <!--根据id查询账户信息-->
+    <select id="queryCustomerById" parameterType="java.lang.String" resultType="com.bicycle.entity.Customer">
+        SELECT accountcust_id, c_name, c_sex, c_age, c_email, c_address
+        FROM customer
+        WHERE accountcust_id = #{custaccountId}
+    </select>
+
+    <!--顾客信息查询-->
+    <resultMap id="Base_category" type="com.bicycle.entity.Customer">
+        <id column="accountcust_id" property="accountcustId"/>
+        <result column="c_name" property="cName"/>
+        <result column="c_sex" property="cSex"/>
+        <result column="c_age" property="cAge"/>
+        <result column="c_card" property="cCard"/>
+        <result column="c_phone" property="cPhone"/>
+        <result column="c_email" property="cEmail"/>
+        <result column="c_address" property="cAddress"/>
+        <collection property="customers" ofType="com.bicycle.entity.CustAccount">
+            <id column="accountcust_id" property="accountcustId"/>
+            <result column="c_date" property="cDate"/>
+            <result column="c_status" property="cStatus"/>
+        </collection>
+    </resultMap>
+    <select id="queryCustomerList" resultMap="Base_category">
+        SELECT customer.accountcust_id accountcust_id,
+               customer.c_name c_name,
+               customer.c_sex c_sex,
+               customer.c_age c_age,
+               customer.c_card c_card,
+               customer.c_phone c_phone,
+               customer.c_email c_email,
+               customer.c_address c_address,
+               custaccount.c_date c_date,
+               custaccount.c_status c_status
+        FROM customer
+        INNER JOIN custaccount
+        ON customer.accountcust_id = custaccount.accountcust_id
+    </select>
+
+</mapper>

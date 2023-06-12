@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bicycle.mapper.ReservationMapper">
+    <!--新增预约订单（reservation）-->
+    <insert id="addReservationList" parameterType="java.lang.String">
+        INSERT INTO reservation (reservation_id, accountcust_id, bicycleinfo_id, r_totalprice)
+        SELECT #{reservationId}, #{accountcustId}, #{bicycleinfoId}, d_price
+        FROM depositi
+        INNER JOIN bicycleinfo
+        ON depositi.deposit_id = bicycleinfo.deposit_id
+        AND bicycleinfo.bicycleinfo_id = #{bicycleinfoId}
+    </insert>
+
+    <!--改预约订单信息（reservation）-->
+    <update id="updateReservation" parameterType="com.bicycle.entity.Reservation">
+        UPDATE reservation
+        SET r_number = #{rNumber},
+            r_totalprice = #{rTotalprice}
+        WHERE reservation_id = #{reservationId}
+    </update>
+
+    <!--根据顾客id查询预约订单（reservation、bicycleinfo）-->
+    <select id="queryReservationListById" parameterType="java.lang.String" resultType="com.bicycle.entity.ReservationList">
+        SELECT bicycleinfo.bicycleinfo_id, bicycleinfo.b_brand, bicycleinfo.b_name, bicycleinfo.b_stock, bicycleinfo.b_imgurl, bicycleinfo.b_name, bicycleinfo.b_stock,
+               reservation.reservation_id, reservation.r_number, reservation.r_totalprice,
+               store.s_address
+        FROM reservation, bicycleinfo, store
+        WHERE reservation.accountcust_id = #{accountcustId}
+          AND reservation.r_status = 0
+          AND bicycleinfo.bicycleinfo_id = reservation.bicycleinfo_id
+          AND store.store_id = bicycleinfo.store_id
+    </select>
+
+    <!--根据顾客id删除预约订单-->
+    <delete id="delReservationListById" parameterType="java.util.List">
+        DELETE FROM reservation
+        WHERE reservation_id
+        IN(
+            <foreach collection="listReservationId" item="item" separator=",">#{item}</foreach>
+        )
+    </delete>
+
+    <!--根据订单id结算预约订单（reservation）-->
+    <update id="fulfilReservationListById" parameterType="java.util.Map">
+        UPDATE reservation
+        SET r_status = 1,
+            r_resdate = #{rResdate}
+        WHERE reservation_id
+        IN(
+            <foreach collection="reservationId" item="item" separator=",">#{item}</foreach>
+        )
+    </update>
+    <insert id="addOrderdeposit"  parameterType="java.util.Map">
+            INSERT INTO orderdeposit(orderdeposit.orderdeposit_id, orderdeposit.o_price)
+            SELECT #{orderdepositId}, SUM(r_totalprice)
+            FROM reservation
+            WHERE reservation_id
+            IN(
+                <foreach collection="reservationId" item="item" separator=",">#{item}</foreach>
+            );
+    </insert>
+    <insert id="addLeaseInfo"  parameterType="java.lang.String">
+        INSERT INTO leaseinfo(leaseinfo_id, bicycleinfo_id, accountcust_id, orderdeposit_id, l_datefrist, l_number)
+        SELECT #{s1}, bicycleinfo_id, accountcust_id, #{s2}, #{s3}, r_number
+        FROM reservation
+        WHERE reservation_id = #{s1}
+    </insert>
+    <update id="updateStock" parameterType="java.util.Map">
+        UPDATE bicycleinfo
+        INNER JOIN reservation
+        ON bicycleinfo.bicycleinfo_id = reservation.bicycleinfo_id
+        AND reservation.reservation_id
+        IN(<foreach collection="reservationId" item="item" separator=",">#{item}</foreach>)
+        SET bicycleinfo.b_stock = bicycleinfo.b_stock - reservation.r_number
+    </update>
+
+    <!--预约订单查询-->
+    <select id="queryReservationList" resultType="com.bicycle.entity.ReservationList">
+        SELECT r.reservation_id, r.accountcust_id, r.r_number, r.r_totalprice, r.r_status, r.r_resdate,
+               c.c_name, b.b_brand, b.b_name, s.s_address
+        FROM reservation r
+        LEFT OUTER JOIN customer c ON c.accountcust_id = r.accountcust_id
+        LEFT OUTER JOIN bicycleinfo b ON b.bicycleinfo_id = r.bicycleinfo_id
+        LEFT OUTER JOIN store s ON s.store_id = b.store_id;
+    </select>
+</mapper>
